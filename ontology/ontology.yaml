@@ -1,0 +1,38 @@
+version: "1.0.0"
+domain: "european-wind-dunkelflaute-risk"
+owner: "principal-data-intelligence-architect"
+
+entities:
+  BiddingZone:
+    description: "European electricity market bidding zone for wind generation and Dunkelflaute risk tracking."
+    primary_key: "zone_code"
+    physical_table: "gold.bidding_zone_wind_risk"
+    members:
+      - { zone_code: "UK-GB", name: "Great Britain (NESO)", lat_min: 49.8, lat_max: 59.5, lon_min: -6.5, lon_max: 2.0, installed_wind_gw: 30.2 }
+      - { zone_code: "DE-LU", name: "Germany-Luxembourg", lat_min: 47.2, lat_max: 55.1, lon_min: 5.8, lon_max: 15.1, installed_wind_gw: 69.5 }
+      - { zone_code: "NO2", name: "Southern Norway (North Sea Link)", lat_min: 57.9, lat_max: 60.5, lon_min: 5.0, lon_max: 9.8, installed_wind_gw: 1.8 }
+      - { zone_code: "DK1", name: "West Denmark (Jutland)", lat_min: 54.8, lat_max: 57.8, lon_min: 8.0, lon_max: 11.0, installed_wind_gw: 5.4 }
+      - { zone_code: "NL", name: "Netherlands", lat_min: 50.7, lat_max: 53.6, lon_min: 3.3, lon_max: 7.2, installed_wind_gw: 11.5 }
+
+metrics:
+  wind_speed_100m_ms:
+    description: "Horizontal wind speed magnitude at 100m hub height derived from sqrt(u100^2 + v100^2)."
+    unit: "m/s"
+    valid_range: [0.0, 65.0]
+    source_parameters: ["100u", "100v"]
+
+  wind_capacity_factor:
+    description: "Normalized wind generation output (0.0 to 1.0) using a standard IEC Class II/III offshore/onshore power curve (cut-in 3.0 m/s, rated 12.5 m/s, cut-out 25.0 m/s)."
+    unit: "ratio"
+    valid_range: [0.0, 1.0]
+
+  dunkelflaute_event:
+    description: "Sustained wind drought regime where bidding-zone P50 wind capacity factor stays below 0.10 (10%) for at least 24 consecutive forecast hours."
+    thresholds:
+      max_capacity_factor: 0.10
+      min_consecutive_hours: 24
+    synonyms: ["wind drought", "low wind regime", "anti-cyclonic gloom"]
+
+models:
+  - { model_id: "ecmwf_aifs", type: "ai_deterministic", resolution_deg: 0.25, cycles: ["00z", "06z", "12z", "18z"] }
+  - { model_id: "ecmwf_ifs_ens", type: "physics_ensemble", members: 51, resolution_deg: 0.25, cycles: ["00z", "12z"] }
