@@ -1,0 +1,35 @@
+[project]
+name = "euro-wind-dunkelflaute-platform"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Kaleem Khan", email = "itsaksquare@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "cfgrib>=0.9.15.1",
+    "dask>=2026.8.0",
+    "duckdb>=2.0.1",
+    "eccodes>=2.50.1",
+    "ecmwf-opendata>=0.3.35",
+    "fastapi>=0.165.0",
+    "fastmcp>=4.2.3",
+    "opentelemetry-api>=1.45.2",
+    "opentelemetry-sdk>=1.45.2",
+    "pandas>=3.1.1",
+    "polars>=2.1.0",
+    "pyarrow>=26.0.1",
+    "pydantic>=2.14.4",
+    "pytest>=9.2.0",
+    "pyyaml>=6.0.3",
+    "xarray>=2026.9.0",
+    "zarr>=3.4.2",
+]
+
+[project.scripts]
+euro-wind-dunkelflaute-platform = "euro_wind_dunkelflaute_platform:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
